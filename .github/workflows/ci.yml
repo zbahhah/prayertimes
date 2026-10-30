@@ -1,0 +1,51 @@
+name: ci
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  unix:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, cc: gcc, cxx: g++ }
+          - { os: ubuntu-latest, cc: clang, cxx: clang++ }
+          - { os: macos-latest, cc: clang, cxx: clang++ }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: make test CC=${{ matrix.cc }} CXX=${{ matrix.cxx }}
+  windows-msvc:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: build and test with cl /W4 /WX
+        shell: cmd
+        run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars64.bat"
+          mkdir out
+          for %%t in (test_sun test_rules test_jpl test_muis) do (
+            cl /nologo /W4 /WX /TC /D_CRT_SECURE_NO_WARNINGS /I . tests\%%t.c /Fe:out\%%t.exe /Fo:out\ || exit /b 1
+            out\%%t.exe tests\data || exit /b 1
+          )
+          cl /nologo /W4 /WX /EHsc /I . tests\test_cxx.cpp /Fe:out\test_cxx.exe /Fo:out\ || exit /b 1
+          out\test_cxx.exe || exit /b 1
+          cl /nologo /W4 /WX /TC /D_CRT_SECURE_NO_WARNINGS /I . examples\prayertimes_cli.c /Fe:out\prayertimes_cli.exe /Fo:out\ || exit /b 1
+  esp32:
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [esp32, esp32s3, esp32c3]
+    runs-on: ubuntu-latest
+    container: espressif/idf:v5.3.1
+    steps:
+      - uses: actions/checkout@v4
+      - name: build the ESP-IDF example
+        shell: bash
+        run: |
+          . $IDF_PATH/export.sh
+          cd examples/esp32
+          idf.py set-target ${{ matrix.target }}
+          idf.py build

@@ -4,3 +4,6 @@ out/
 *.o
 *.pdb
 *.ilk
+examples/esp32/build/
+examples/esp32/sdkconfig
+examples/esp32/sdkconfig.old

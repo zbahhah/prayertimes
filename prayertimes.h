@@ -132,6 +132,11 @@ PTDEF char *pt_format_hms(double utc, int utc_offset_min, char buf[9]); /* local
 
 #ifdef PRAYERTIMES_IMPLEMENTATION
 #include <math.h>
+#include <stdio.h>
+#include <string.h>
+
+/* The algorithms need a 64-bit double (Unix seconds and series terms); this fails to compile otherwise. */
+typedef char pt__double_must_be_64_bit[(sizeof(double) >= 8) ? 1 : -1];
 
 #define PT__PI 3.14159265358979323846
 
@@ -370,8 +375,6 @@ PTDEF double pt_sun_altitude(double unix_s, double latitude_deg, double longitud
 /* ------------------------------------------------------------------------ */
 /* Methods, settings and the prayer-time engine.                             */
 /* ------------------------------------------------------------------------ */
-#include <stdio.h>
-#include <string.h>
 
 /* Built-in method presets, indexed by pt_method_id. */
 static const pt_method pt__methods[PT_METHOD_COUNT] = {

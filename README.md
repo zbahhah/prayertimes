@@ -98,6 +98,15 @@ clang -std=c99 -I. tests/test_jpl.c -o test_jpl.exe
 test_jpl.exe tests/data
 ```
 
+## Embedded (ESP32 and other MCUs)
+
+- Works on any C99 or C++ toolchain with a 64-bit `double` and `<math.h>`: ESP32 (ESP-IDF or Arduino), STM32, RP2040 and similar. CI builds the ESP-IDF example for esp32, esp32s3 and esp32c3.
+- No heap, no globals, no file system or network; one `pt_compute` uses a few hundred bytes of stack.
+- `double` is required (there is a compile-time check). Boards where `double` is 32-bit (8-bit AVR such as the Arduino Uno) are not supported.
+- On chips without a double-precision FPU (all ESP32 variants) double maths is done in software, so a call takes milliseconds rather than microseconds; compute once a day and cache. `examples/esp32` prints the measured time.
+- Arduino: put `prayertimes.h` next to the sketch and add `#define PRAYERTIMES_IMPLEMENTATION` before the include in exactly one `.ino`/`.cpp` file.
+- The library has no time-zone database: pass the UTC offset in minutes for the date (ESP-IDF can derive it from a POSIX `TZ` string with `localtime_r`).
+
 ## Data sources
 
 The tests compare against independent references stored under `tests/data/`; `tests/data/README.md` describes their exact provenance and format: Sun tables from the JPL Horizons on-line ephemeris (NASA/JPL) and the MUIS Singapore published timetable, from the "Muslim Prayer Timetable" datasets on data.gov.sg, made available under the Singapore Open Data Licence v1.0.
