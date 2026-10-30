@@ -42,7 +42,19 @@ int main(void) {
 
 ## Accuracy
 
-TODO: filled in after review
+The Sun's position comes from a truncated VSOP87 Earth series with IAU 1976 precession, abridged nutation, aberration and the Espenak–Meeus ΔT. Each time is found by iterating on the hour angle to 1 ms.
+
+| Check (in `tests/`) | Data | Result |
+|---|---|---|
+| Sun altitude against JPL Horizons | 6 sites × 4 dates in 2026, 43,224 one-minute rows | worst 2.0″ |
+| Prayer times against JPL Horizons | Dhuhr, sunrise, sunset, Fajr/Isha/Maghrib at 14 angles, Asr (both factors): 456 comparisons | worst 0.14 s |
+| MUIS Singapore published timetable | every day of 2024–2026, six times a day | all within 2.6 min (MUIS does not publish its precaution or rounding) |
+
+Notes:
+- UTC is used in place of UT1 (they differ by less than 0.9 s).
+- Times are computed at sea level.
+- Sunrise and sunset are for the upper limb with standard refraction (34′). Prayer angles are geometric (no refraction).
+- The tests cover 2024–2026. The ΔT model covers any year, but accuracy outside about 1900–2100 has not been checked.
 
 ## Methods
 
