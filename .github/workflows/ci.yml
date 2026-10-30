@@ -15,12 +15,12 @@ jobs:
           - { os: macos-latest, cc: clang, cxx: clang++ }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: make test CC=${{ matrix.cc }} CXX=${{ matrix.cxx }}
   windows-msvc:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: build and test with cl /W4 /WX
         shell: cmd
         run: |
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     container: espressif/idf:v5.3.1
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: build the ESP-IDF example
         shell: bash
         run: |

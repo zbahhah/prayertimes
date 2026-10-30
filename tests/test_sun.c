@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-static char fails[16][96];
+static char fails[16][600];
 static int nfail = 0;
 
 static void add_fail(const char *msg) {
@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
             snprintf(path, sizeof path, "%s/horizons/%s_%s.txt", data, sites[si], dates[di]);
             f = fopen(path, "r");
             if (!f) {
-                char msg[96];
+                char msg[600];
                 snprintf(msg, sizeof msg, "cannot open %s", path);
                 add_fail(msg);
                 printf("%s %s: rows 0, worst 0.00 arcsec\n", sites[si], dates[di]);

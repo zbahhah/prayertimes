@@ -21,7 +21,7 @@ static const char *kind_names[KIND_COUNT] = { "dhuhr", "sunrise", "sunset", "faj
 typedef struct { int n; double sum, worst; char where[96]; } stat;
 static stat stats[KIND_COUNT];
 
-static char fails[16][128];
+static char fails[16][600];
 static int nfail;
 
 static void add_fail(const char *msg) {
@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
 
     for (si = 0; si < 6; si++) {
         for (di = 0; di < 4; di++) {
-            char path[512], file[64], line[512], msg[128];
+            char path[512], file[64], line[512], msg[600];
             FILE *f;
             int lineno = 0, n = 0, ti = -1;
             double lat = 0.0, lon = 0.0, t_transit = NAN, dec_transit = NAN, h_rs = NAN, jpl;
